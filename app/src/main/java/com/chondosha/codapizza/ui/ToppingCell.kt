@@ -44,11 +44,12 @@ private fun ToppingCellPreviewNotOnPizza() {
 fun ToppingCell(
     topping: Topping,
     placement: ToppingPlacement?,
+    modifier: Modifier = Modifier,
     onClickTopping: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .clickable { onClickTopping() }
             .padding(vertical = 4.dp, horizontal = 16.dp)
     ) {
@@ -58,7 +59,7 @@ fun ToppingCell(
         )
 
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .weight(1f, fill = true)
                 .padding(start = 4.dp)
         ) {
