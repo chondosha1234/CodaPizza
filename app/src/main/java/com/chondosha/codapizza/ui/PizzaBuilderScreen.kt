@@ -1,5 +1,7 @@
 package com.chondosha.codapizza.ui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
@@ -15,8 +18,11 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chondosha.codapizza.R
+import com.chondosha.codapizza.model.Pizza
 import com.chondosha.codapizza.model.Topping
 import com.chondosha.codapizza.model.ToppingPlacement
+
+private var pizza by mutableStateOf(Pizza())
 
 // Main composable to draw all main content inside activity -- handle navigation here
 @Preview
@@ -51,8 +57,18 @@ private fun ToppingList(
         items(Topping.values()) { topping ->
             ToppingCell(
                 topping = topping,
-                placement = ToppingPlacement.Left,
-                onClickTopping = {}
+                placement = pizza.toppings[topping],
+                onClickTopping = {
+                    val isOnPizza = pizza.toppings[topping] != null
+                    pizza = pizza.withTopping(
+                        topping = topping,
+                        placement = if (isOnPizza) {
+                            null
+                        } else {
+                            ToppingPlacement.All
+                        }
+                    )
+                }
             )
         }
     }
@@ -65,7 +81,7 @@ private fun OrderButton(
     Button(
         modifier = modifier,
         onClick = {
-            /* Todo */ }
+            /* TODO */ }
     ){
         Text(
             text = stringResource(R.string.place_order_button)
