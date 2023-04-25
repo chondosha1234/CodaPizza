@@ -34,7 +34,7 @@ fun PizzaBuilderScreen(
     ) {
         ToppingList(
             pizza = pizza,
-            onEditPizza = { pizza = it},
+            onEditPizza = { pizza = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = true)
@@ -55,6 +55,21 @@ private fun ToppingList(
     onEditPizza: (Pizza) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    var toppingBeingAdded by rememberSaveable { mutableStateOf<Topping?>(null) }
+
+    toppingBeingAdded?.let { topping ->
+        ToppingPlacementDialog (
+            topping = topping,
+            onSetToppingPlacement = { placement ->
+                onEditPizza(pizza.withTopping(topping, placement))
+            },
+            onDismissRequest = {
+                toppingBeingAdded = null
+            }
+        )
+    }
+
     LazyColumn(
         modifier = modifier
     ) {
@@ -63,15 +78,7 @@ private fun ToppingList(
                 topping = topping,
                 placement = pizza.toppings[topping],
                 onClickTopping = {
-                    val isOnPizza = pizza.toppings[topping] != null
-                    onEditPizza(pizza.withTopping(
-                        topping = topping,
-                        placement = if (isOnPizza) {
-                            null
-                        } else {
-                            ToppingPlacement.All
-                        }
-                    ))
+                    toppingBeingAdded = topping
                 }
             )
         }
